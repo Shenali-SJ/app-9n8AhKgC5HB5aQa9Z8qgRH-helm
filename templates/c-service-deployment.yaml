@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{.Values.c-service.serviceName}}'
+  labels:
+    app: '{{.Values.c-service.serviceName}}'
+spec:
+  replicas: '{{.Values.c-service.avgReplicas}}'
+  selector:
+    matchLabels:
+      app: '{{.Values.c-service.serviceName}}'
+  template:
+    metadata:
+      labels:
+        app: '{{.Values.c-service.serviceName}}'
+    spec:
+      containers:
+      - name: '{{.Values.c-service.serviceName}}'
+        image: '{{.Values.c-service.dockerImage}}'
+        ports:
+        - containerPort: '{{.Values.c-service.containerPort}}'
+        env:
+        - name: '{{.Values.c-service.MYSQL_ROOT_PASSWORD.name}}'
+          valueFrom:
+            configMapKeyRef:
+              name: '{{.Values.c-service.serviceName}}'
+              key: '{{.Values.c-service.MYSQL_ROOT_PASSWORD.name}}'
+        - name: '{{.Values.c-service.MYSQL_DATABASE.name}}'
+          valueFrom:
+            configMapKeyRef:
+              name: '{{.Values.c-service.serviceName}}'
+              key: '{{.Values.c-service.MYSQL_DATABASE.name}}'
+        - name: '{{.Values.c-service.DB_HOST.name}}'
+          valueFrom:
+            configMapKeyRef:
+              name: '{{.Values.c-service.serviceName}}'
+              key: '{{.Values.c-service.DB_HOST.name}}'
+        - name: '{{.Values.c-service.DB_USERNAME.name}}'
+          valueFrom:
+            configMapKeyRef:
+              name: '{{.Values.c-service.serviceName}}'
+              key: '{{.Values.c-service.DB_USERNAME.name}}'
+        - name: '{{.Values.c-service.DB_PASSWORD.name}}'
+          valueFrom:
+            configMapKeyRef:
+              name: '{{.Values.c-service.serviceName}}'
+              key: '{{.Values.c-service.DB_PASSWORD.name}}'
